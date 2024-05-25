@@ -20,7 +20,7 @@ func NewRepository(db *sql.DB) Repository {
 
 func (d *dbRepository) Create(ctx context.Context, user *User) (err error) {
 	q := `
-        INSERT INTO users (uid, name, email, username, hashed_password, sex, birthdate)
+        INSERT INTO dealls_bumble.users (uid, name, email, username, hashed_password, sex, birthdate)
         VALUES ($1, $2, $3, $4, $5, $6, $7);
     `
 	_, err = d.db.ExecContext(ctx, q,
@@ -33,7 +33,7 @@ func (d *dbRepository) Create(ctx context.Context, user *User) (err error) {
 func (d dbRepository) GetByUsername(ctx context.Context, username string) (user User, err error) {
 	q := `
         SELECT uid, name, email, username, hashed_password, sex, birthdate, created_at
-        FROM users
+        FROM dealls_bumble.users
         WHERE username = $1;
     `
 	row := d.db.QueryRowContext(ctx, q, username)

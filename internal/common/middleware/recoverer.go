@@ -20,6 +20,7 @@ func PanicRecoverer(next http.Handler) http.Handler {
 				}
 				response.JSON(w, http.StatusInternalServerError, servicebase.ResponseBody{
 					Message: "Internal server error",
+					Code:    servicebase.Code5XX,
 				})
 			}
 		}()

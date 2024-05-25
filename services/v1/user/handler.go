@@ -33,7 +33,7 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: MessageFailedDecodeJSON,
-			Code:    "BE-4XX",
+			Code:    servicebase.Code4XX,
 		})
 		return
 	}
@@ -43,29 +43,29 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: err.Error(),
-			Code:    "BE-4XX",
+			Code:    servicebase.Code4XX,
 		})
 		return
 	}
 
-	userResp, err := h.service.Create(r.Context(), payload.NewLayoutDateOnly())
+	userResp, err := h.service.Create(r.Context(), payload)
 	if errors.Is(err, ErrAlreadyExists) {
 		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: err.Error(),
-			Code:    "BE-4XX",
+			Code:    servicebase.Code4XX,
 		})
 		return
 	}
 	if err != nil {
 		response.JSON(w, http.StatusInternalServerError, servicebase.ResponseBody{
 			Message: MessageInternalError,
-			Code:    "BE-5XX",
+			Code:    servicebase.Code5XX,
 		})
 		return
 	}
 
 	resp.Message = MessageSuccess
-	resp.Code = "BE-2XX"
+	resp.Code = servicebase.CodeSuccess
 	resp.Data = &userResp
 	response.JSON(w, http.StatusCreated, resp)
 }
@@ -80,7 +80,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: MessageFailedDecodeJSON,
-			Code:    "BE-4XX",
+			Code:    servicebase.Code4XX,
 		})
 		return
 	}
@@ -89,7 +89,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: err.Error(),
-			Code:    "BE-4XX",
+			Code:    servicebase.Code4XX,
 		})
 		return
 	}
@@ -98,27 +98,27 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	if errors.Is(err, ErrNotFound) {
 		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: err.Error(),
-			Code:    "BE-4XX",
+			Code:    servicebase.Code4XX,
 		})
 		return
 	}
 	if errors.Is(err, ErrWrongPassword) {
 		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: err.Error(),
-			Code:    "BE-4XX",
+			Code:    servicebase.Code4XX,
 		})
 		return
 	}
 	if err != nil {
 		response.JSON(w, http.StatusInternalServerError, servicebase.ResponseBody{
 			Message: MessageInternalError,
-			Code:    "BE-5XX",
+			Code:    servicebase.Code5XX,
 		})
 		return
 	}
 
 	resp.Message = MessageSuccess
-	resp.Code = "BE-2XX"
+	resp.Code = servicebase.CodeSuccess
 	resp.Data = &userResp
 	response.JSON(w, http.StatusOK, resp)
 }

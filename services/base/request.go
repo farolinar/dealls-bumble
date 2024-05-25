@@ -1,8 +1,8 @@
 package servicebase
 
 import (
-	"regexp"
 	"time"
+	"unicode"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
@@ -13,10 +13,23 @@ var (
 )
 
 var PasswordValidationRule = validation.NewStringRule(func(s string) bool {
-	// Compile the regex
-	r := regexp.MustCompile(PasswordValidation)
+	if len(s) < 8 {
+		return false
+	}
 
-	return r.MatchString(s)
+	var hasUpper, hasLower, hasSpecial bool
+	for _, char := range s {
+		switch {
+		case unicode.IsUpper(char):
+			hasUpper = true
+		case unicode.IsLower(char):
+			hasLower = true
+		case unicode.IsPunct(char) || unicode.IsSymbol(char):
+			hasSpecial = true
+		}
+	}
+
+	return hasUpper && hasLower && hasSpecial
 }, MessagePasswordInvalid)
 
 var MustAbove18Rule = func(birthdate, layout string) bool {

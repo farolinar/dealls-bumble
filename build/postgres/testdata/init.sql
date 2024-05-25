@@ -1,7 +1,7 @@
 CREATE SCHEMA dealls_bumble;
 
 -- users
-drop type if exists sex;
+-- drop type if exists sex;
 create type sex AS ENUM('female', 'male');
 
 create table if not exists dealls_bumble.users

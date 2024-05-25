@@ -12,3 +12,9 @@ type ResponseBody struct {
 	Message    string      `json:"message"`
 	Pagination *Pagination `json:"pagination,omitempty"`
 }
+
+var (
+	CodeSuccess = "BE-000"
+	Code4XX     = "BE-4XX"
+	Code5XX     = "BE-5XX"
+)
