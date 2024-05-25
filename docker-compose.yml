@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:   
+  dealls-postgres-db:
+    image: postgres:13
+    container_name: dealls-postgres-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: always
+    volumes:
+      - "./build/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql"
+    ports:
+      - "5432:5432"
+
+volumes:
+  dealls-postgres-db:
+    driver: local
+    
