@@ -52,5 +52,8 @@ type UserLoginPayload struct {
 }
 
 func (p UserLoginPayload) Validate() error {
-	return nil
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.Username, validation.Required),
+		validation.Field(&p.Password, validation.Required),
+	)
 }
