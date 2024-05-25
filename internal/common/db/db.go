@@ -1,0 +1,112 @@
+package db
+
+import (
+	"context"
+	"database/sql"
+	// "github.com/golang-migrate/migrate"
+	// "github.com/golang-migrate/migrate/database/postgres"
+)
+
+type DB struct {
+	sqlDB *sql.DB
+}
+
+func (db *DB) DB() *sql.DB {
+	return db.sqlDB
+}
+
+func (db *DB) StartTx(ctx context.Context, f func(*sql.Tx) error) error {
+	tx, err := db.sqlDB.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return err
+	}
+	err = f(tx)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
+}
+
+// func (db *DB) UpMigration() error {
+// 	m, err := db.createMigrate()
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	limit := 0
+// 	for {
+// 		if err = m.Up(); err != nil {
+// 			err = db.migrationErrorHandler(err, m)
+// 		}
+// 		if err == nil {
+// 			log.Info().Msg("Successfully running up migrations.")
+// 			return nil
+// 		}
+
+// 		limit += 1
+// 		if limit == 5 {
+// 			log.Error().Msg("Failed running up migrations.")
+// 			return err
+// 		}
+// 	}
+// }
+
+// func (db *DB) DownMigration() error {
+// 	m, err := db.createMigrate()
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	limit := 0
+// 	for {
+// 		if err = m.Down(); err != nil {
+// 			err = db.migrationErrorHandler(err, m)
+// 		}
+// 		if err == nil {
+// 			log.Info().Msg("Successfully running down migrations.")
+// 			return nil
+// 		}
+
+// 		limit += 1
+// 		if limit == 5 {
+// 			log.Info().Msg("Failed running down migrations.")
+// 			return err
+// 		}
+// 	}
+// }
+
+// func (db *DB) createMigrate() (*migrate.Migrate, error) {
+// 	driver, err := postgres.WithInstance(db.sqlDB, &postgres.Config{})
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	m, err := migrate.NewWithDatabaseInstance(
+// 		os.Getenv("MIGRATIONS_URI"),
+// 		"postgres", driver)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	return m, nil
+// }
+
+// func (db *DB) migrationErrorHandler(err error, m *migrate.Migrate) error {
+// 	log.Info().Msg(fmt.Sprintf("migration: handling error: %v", err))
+// 	if strings.Contains(err.Error(), "Dirty database") {
+// 		re := regexp.MustCompile("[0-9]+")
+// 		s := re.FindAllString(err.Error(), -1)
+
+// 		if len(s) > 0 {
+// 			version, _ := strconv.Atoi(s[0])
+// 			err := m.Force(version)
+// 			if err != nil {
+// 				return err
+// 			}
+// 		}
+// 	} else if err == migrate.ErrNoChange {
+// 		return nil
+// 	}
+// 	return err
+// }

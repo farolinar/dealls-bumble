@@ -10,6 +10,7 @@ create table if not exists dealls_bumble.users
     uid CHAR(16) NOT NULL UNIQUE,
     name varchar(50) NOT NULL,
     email varchar(50) UNIQUE NOT NULL,
+    email_verified bool NOT NULL DEFAULT false,
     username varchar(20) UNIQUE NOT NULL,
     hashed_password BYTEA NOT NULL,
     sex sex NOT NULL,

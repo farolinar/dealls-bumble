@@ -14,8 +14,8 @@ import (
 
 var dbConn *sql.DB
 
-func GetDBConnection() (db *sql.DB) {
-	if db == nil {
+func GetDBConnection() (dbConn *sql.DB) {
+	if dbConn == nil {
 		log.Fatal().Msgf("database not initialized")
 	}
 	return dbConn

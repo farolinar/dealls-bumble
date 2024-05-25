@@ -6,6 +6,7 @@ import (
 	"runtime/debug"
 
 	"github.com/farolinar/dealls-bumble/internal/common/response"
+	servicebase "github.com/farolinar/dealls-bumble/services/base"
 	"github.com/rs/zerolog/log"
 )
 
@@ -17,7 +18,7 @@ func PanicRecoverer(next http.Handler) http.Handler {
 				if r != http.ErrAbortHandler {
 					log.Error().Msg(fmt.Sprintf("Recovered from panic: %s", string(debug.Stack())))
 				}
-				response.JSON(w, http.StatusInternalServerError, response.ResponseBody{
+				response.JSON(w, http.StatusInternalServerError, servicebase.ResponseBody{
 					Message: "Internal server error",
 				})
 			}

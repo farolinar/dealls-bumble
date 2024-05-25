@@ -14,6 +14,7 @@ import (
 	"github.com/farolinar/dealls-bumble/config"
 	"github.com/farolinar/dealls-bumble/config/postgres"
 	"github.com/farolinar/dealls-bumble/internal/common/middleware"
+	userv1 "github.com/farolinar/dealls-bumble/services/v1/user"
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
 )
@@ -24,7 +25,7 @@ func Initialize(cfg config.AppConfig) *mux.Router {
 		WithPort(cfg.Postgres.Port).WithUsername(cfg.Postgres.Username).
 		WithDBName(cfg.Postgres.DbName).Build()
 
-	_, err := postgresDB.NewPostgreDatabase()
+	db, err := postgresDB.NewPostgreDatabase()
 
 	if err != nil {
 		log.Fatal().Msgf("Error connecting to database, will exit | %s", err.Error())
@@ -33,12 +34,24 @@ func Initialize(cfg config.AppConfig) *mux.Router {
 	r := mux.NewRouter()
 	r.Use(middleware.Logging)
 	r.Use(middleware.PanicRecoverer)
+	v1 := r.PathPrefix("/v1").Subrouter()
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "text")
 		w.WriteHeader(http.StatusOK)
 		io.WriteString(w, "Service ready")
 	})
+
+	// healthCheck := r.PathPrefix("/health-check").Subrouter()
+	// healthCheck.HandleFunc("/db", readiness.DBReadinessHandler)
+
+	// initialize user domain
+	userRepository := userv1.NewRepository(db)
+	userService := userv1.NewService(userRepository)
+	userHandler := userv1.NewHandler(userService)
+
+	ur := v1.PathPrefix("/user").Subrouter()
+	ur.HandleFunc("/register", userHandler.CreateUser).Methods(http.MethodPost)
 
 	return r
 }

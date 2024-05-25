@@ -3,20 +3,22 @@ package jwt
 import (
 	"errors"
 	"fmt"
-	"os"
 	"time"
 
+	"github.com/farolinar/dealls-bumble/config"
 	"github.com/golang-jwt/jwt/v5"
 )
 
 var (
-	key = []byte(os.Getenv("JWT_SECRET"))
+	// key = []byte(os.Getenv("JWT_SECRET"))
 
 	ErrUnknownClaims = errors.New("unknown claims type")
 	ErrTokenInvalid  = errors.New("invalid token")
 )
 
 func Sign(ttl time.Duration, subject string) (string, error) {
+	cfg := config.GetConfig()
+
 	now := time.Now()
 	expiry := now.Add(ttl)
 	t := jwt.NewWithClaims(
@@ -28,16 +30,18 @@ func Sign(ttl time.Duration, subject string) (string, error) {
 			Subject:   subject,
 		},
 	)
-	return t.SignedString(key)
+	return t.SignedString([]byte(cfg.App.JWTSecret))
 }
 
 func VerifyAndGetSubject(tokenString string) (string, error) {
+	cfg := config.GetConfig()
+
 	token, err := jwt.ParseWithClaims(tokenString, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
-		return key, nil
+		return []byte(cfg.App.JWTSecret), nil
 	})
 	if err != nil {
 		return "", err

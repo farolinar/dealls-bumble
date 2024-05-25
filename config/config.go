@@ -84,12 +84,15 @@ type AppConfig struct {
 }
 
 type App struct {
-	Secret    string `mapstructure:"secret" validate:"required"`
-	Host      string `mapstructure:"host" validate:"required"`
-	Port      int    `mapstructure:"port" validate:"required"`
-	Name      string `mapstructure:"name" validate:"required"`
-	LogPretty bool   `mapstructure:"log_pretty" validate:"required"`
-	LogLevel  string `mapstructure:"log_level" validate:"required"`
+	Secret          string `mapstructure:"secret" validate:"required"`
+	Host            string `mapstructure:"host" validate:"required"`
+	Port            int    `mapstructure:"port" validate:"required"`
+	Name            string `mapstructure:"name" validate:"required"`
+	LogPretty       bool   `mapstructure:"log_pretty" validate:"required"`
+	LogLevel        string `mapstructure:"log_level" validate:"required"`
+	BCryptSalt      int    `mapstructure:"bcrypt_salt" validate:"required"`
+	JWTSecret       string `mapstructure:"jwt_secret" validate:"required"`
+	JWTHourDuration int    `mapstructure:"jwt_hour_duration" validate:"required"`
 }
 
 type Postgres struct {

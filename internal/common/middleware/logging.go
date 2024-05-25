@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/farolinar/dealls-bumble/internal/common/response"
+	servicebase "github.com/farolinar/dealls-bumble/services/base"
 	"github.com/rs/zerolog/log"
 )
 
@@ -43,11 +43,11 @@ func Logging(next http.Handler) http.Handler {
 			Str("uri", r.RequestURI).
 			Str("method", r.Method).
 			Msg("request information")
-		var resp response.ResponseBody
+		var resp servicebase.ResponseBody
 		err := json.NewDecoder(&logRespWriter.buf).Decode(&resp)
 		if logRespWriter.statusCode >= 500 && err == nil {
 			log.Error().
-				Str("error", resp.Error).
+				Str("error", resp.Message).
 				Msg("internal server errror on request")
 		}
 	})
