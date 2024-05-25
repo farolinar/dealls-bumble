@@ -2,6 +2,7 @@ package userv1
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"time"
@@ -15,6 +16,7 @@ import (
 
 type Service interface {
 	Create(ctx context.Context, payload UserCreatePayload) (resp UserAuthentication, err error)
+	Login(ctx context.Context, payload UserLoginPayload) (resp UserAuthentication, err error)
 }
 
 type userService struct {
@@ -72,5 +74,35 @@ func (s *userService) Create(ctx context.Context, payload UserCreatePayload) (re
 
 	// TODO: upload image
 
+	return
+}
+
+func (s *userService) Login(ctx context.Context, payload UserLoginPayload) (resp UserAuthentication, err error) {
+	user, err := s.repository.GetByUsername(ctx, payload.Username)
+	if err != nil {
+		log.Debug().Msgf("error getting user: %v", err)
+		if err == sql.ErrNoRows {
+			err = ErrNotFound
+		}
+		return
+	}
+	match, err := password.Matches(payload.Password, *user.HashedPassword)
+	if err != nil {
+		log.Debug().Msgf("error matching password: %v", err)
+		return
+	}
+	if !match {
+		err = ErrWrongPassword
+		return
+	}
+
+	// create access token with signed jwt
+	accessToken, err := auth.CreateAccessToken(fmt.Sprint(user.UID))
+	if err != nil {
+		log.Debug().Msgf("error creating access token: %v", err)
+		return
+	}
+
+	resp.Token = accessToken
 	return
 }

@@ -45,3 +45,12 @@ func (p UserCreatePayload) Validate() error {
 		validation.Field(&p.Birthdate, validation.Required, validation.Date(p.TimeLayout)),
 	)
 }
+
+type UserLoginPayload struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func (p UserLoginPayload) Validate() error {
+	return nil
+}

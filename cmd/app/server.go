@@ -52,6 +52,7 @@ func Initialize(cfg config.AppConfig) *mux.Router {
 
 	ur := v1.PathPrefix("/user").Subrouter()
 	ur.HandleFunc("/register", userHandler.CreateUser).Methods(http.MethodPost)
+	ur.HandleFunc("/login", userHandler.Login).Methods(http.MethodPost)
 
 	return r
 }

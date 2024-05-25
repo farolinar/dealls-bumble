@@ -7,6 +7,7 @@ import (
 
 type Repository interface {
 	Create(ctx context.Context, user *User) (err error)
+	GetByUsername(ctx context.Context, username string) (user User, err error)
 }
 
 type dbRepository struct {
@@ -26,5 +27,20 @@ func (d *dbRepository) Create(ctx context.Context, user *User) (err error) {
 		user.UID, user.Name, user.Email, user.Username, user.HashedPassword, user.Sex,
 		user.Birthdate)
 
+	return
+}
+
+func (d dbRepository) GetByUsername(ctx context.Context, username string) (user User, err error) {
+	q := `
+        SELECT uid, name, email, username, hashed_password, sex, birthdate, created_at
+        FROM users
+        WHERE username = $1;
+    `
+	row := d.db.QueryRowContext(ctx, q, username)
+	err = row.Scan(&user.UID, &user.Name, &user.Email, &user.Username, &user.HashedPassword,
+		&user.Sex, &user.Birthdate, &user.CreatedAt)
+	// if err == sql.ErrNoRows {
+	//     return nil, ErrNotFound
+	// }
 	return
 }
