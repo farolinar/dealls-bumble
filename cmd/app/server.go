@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/farolinar/dealls-bumble/cmd/readiness"
 	"github.com/farolinar/dealls-bumble/config"
 	"github.com/farolinar/dealls-bumble/config/postgres"
 	"github.com/farolinar/dealls-bumble/internal/common/middleware"
@@ -42,8 +43,8 @@ func Initialize(cfg config.AppConfig) *mux.Router {
 		io.WriteString(w, "Service ready")
 	})
 
-	// healthCheck := r.PathPrefix("/health-check").Subrouter()
-	// healthCheck.HandleFunc("/db", readiness.DBReadinessHandler)
+	healthCheck := r.PathPrefix("/health-check").Subrouter()
+	healthCheck.HandleFunc("/db", readiness.DBReadinessHandler)
 
 	// initialize user domain
 	userRepository := userv1.NewRepository(db)

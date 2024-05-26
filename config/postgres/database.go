@@ -9,15 +9,11 @@ import (
 	"database/sql"
 
 	_ "github.com/jackc/pgx/v5"
-	"github.com/rs/zerolog/log"
 )
 
 var dbConn *sql.DB
 
-func GetDBConnection() (dbConn *sql.DB) {
-	if dbConn == nil {
-		log.Fatal().Msgf("database not initialized")
-	}
+func GetDBConnection() (db *sql.DB) {
 	return dbConn
 }
 

@@ -1,0 +1,606 @@
+{
+	"info": {
+		"_postman_id": "70f8361c-ed32-409e-bb45-6bca7a5d4bc2",
+		"name": "dealls-bumble",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6274929"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Tav\",\r\n    \"email\": \"valerie.silverhand@gmail.com\",\r\n    \"username\": \"valerie.silverhand\",\r\n    \"password\": \"Pass12345!\",\r\n    \"sex\": \"female\",\r\n    \"birthdate\": \"1999-10-23\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/user/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Register Success - 201",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Tav\",\r\n    \"email\": \"valerie.silverhand@gmail.com\",\r\n    \"username\": \"valerie.silverhand\",\r\n    \"password\": \"Pass12345!\",\r\n    \"sex\": \"female\",\r\n    \"birthdate\": \"1999-10-23\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/user/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"user",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 26 May 2024 07:07:40 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "258"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": \"BE-000\",\n    \"message\": \"Success\",\n    \"data\": {\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJicjI2NWxYaXRuYjJoVlk4IiwiZXhwIjoxNzE2NzE0NDYwLCJuYmYiOjE3MTY3MDcyNjAsImlhdCI6MTcxNjcwNzI2MH0.8yO_B9S2nUfoUlcdES5-da8B82jHylGP-HEjaOZaUIE\"\n    }\n}"
+						},
+						{
+							"name": "Register Email Invalid - 400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Tav\",\r\n    \"email\": \"valerie.silverhand@gmail\",\r\n    \"username\": \"valerie.silverhand\",\r\n    \"password\": \"Pass12345!\",\r\n    \"sex\": \"female\",\r\n    \"birthdate\": \"1999-10-23\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/user/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"user",
+										"register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 26 May 2024 09:35:39 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "75"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": \"BE-4XX\",\n    \"message\": \"email: must be a valid email address.\"\n}"
+						},
+						{
+							"name": "Register Name Invalid - 400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"T\",\r\n    \"email\": \"valerie.silverhand@gmail.com\",\r\n    \"username\": \"valerie.silverhand\",\r\n    \"password\": \"Pass12345!\",\r\n    \"sex\": \"female\",\r\n    \"birthdate\": \"1999-10-23\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/user/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"user",
+										"register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 26 May 2024 09:36:19 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "80"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": \"BE-4XX\",\n    \"message\": \"name: the length must be between 3 and 50.\"\n}"
+						},
+						{
+							"name": "Register Username Invalid - 400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Tav\",\r\n    \"email\": \"valerie.silverhand@gmail.com\",\r\n    \"username\": \"v\",\r\n    \"password\": \"Pass12345!\",\r\n    \"sex\": \"female\",\r\n    \"birthdate\": \"1999-10-23\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/user/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"user",
+										"register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 26 May 2024 09:37:26 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "84"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": \"BE-4XX\",\n    \"message\": \"username: the length must be between 3 and 30.\"\n}"
+						},
+						{
+							"name": "Register Password Invalid - 400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Tav\",\r\n    \"email\": \"valerie.silverhand@gmail.com\",\r\n    \"username\": \"valerie.silverhand\",\r\n    \"password\": \"Pass12345\",\r\n    \"sex\": \"female\",\r\n    \"birthdate\": \"1999-10-23\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/user/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"user",
+										"register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 26 May 2024 09:38:29 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "165"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": \"BE-4XX\",\n    \"message\": \"password: Minimum eight characters, at least one uppercase letter, one lowercase letter, one number, and one special character.\"\n}"
+						},
+						{
+							"name": "Register Sex Invalid - 400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Tav\",\r\n    \"email\": \"valerie.silverhand@gmail.com\",\r\n    \"username\": \"valerie.silverhand\",\r\n    \"password\": \"Pass12345!\",\r\n    \"sex\": \"\",\r\n    \"birthdate\": \"1999-10-23\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/user/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"user",
+										"register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 26 May 2024 09:39:01 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "59"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": \"BE-4XX\",\n    \"message\": \"sex: cannot be blank.\"\n}"
+						},
+						{
+							"name": "Register Age must be above 18 - 400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Tav\",\r\n    \"email\": \"valerie.silverhand@gmail.com\",\r\n    \"username\": \"valerie.silverhand\",\r\n    \"password\": \"Pass12345!\",\r\n    \"sex\": \"female\",\r\n    \"birthdate\": \"2024-10-23\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/user/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"user",
+										"register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 26 May 2024 09:39:30 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "66"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": \"BE-4XX\",\n    \"message\": \"birthdate: Age must above 18\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ODAyOW1pY1dQMm1SQVpGIiwiZXhwIjoxNzE2Njk0ODcxLCJuYmYiOjE3MTY2ODc2NzEsImlhdCI6MTcxNjY4NzY3MX0.aq0IMavcIm1Bf_hC6Ff5utRSC3NulcXjB6Si-2kMU8I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"valerie.silverhand\",\r\n    \"password\": \"Pass12345!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/user/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login Success - 200",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"valerie.silverhand\",\r\n    \"password\": \"Pass12345!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/user/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"user",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 26 May 2024 09:41:27 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "258"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": \"BE-000\",\n    \"message\": \"Success\",\n    \"data\": {\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtb2V0TzNJVkRMSUJjNDY5IiwiZXhwIjoxNzE2NzIzNjg3LCJuYmYiOjE3MTY3MTY0ODcsImlhdCI6MTcxNjcxNjQ4N30.k2_EiPV5GQ3exVSXL2zmy5kU_SLs0sVLwHe86_it5Cs\"\n    }\n}"
+						},
+						{
+							"name": "Login User Not Found - 400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"johnny.silverhand\",\r\n    \"password\": \"Pass12345!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/user/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"user",
+										"login"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 26 May 2024 09:41:53 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "52"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": \"BE-4XX\",\n    \"message\": \"User not found\"\n}"
+						},
+						{
+							"name": "Login Wrong Password - 400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"valerie.silverhand\",\r\n    \"password\": \"Pass12345\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/user/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"user",
+										"login"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 26 May 2024 09:42:18 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "52"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": \"BE-4XX\",\n    \"message\": \"Wrong password\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Service Ready",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/health-check/db",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"health-check",
+						"db"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
