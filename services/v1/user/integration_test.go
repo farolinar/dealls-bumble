@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -113,4 +114,119 @@ func TestUser_Integration_CreateUserErrAlreadyExists(t *testing.T) {
 
 	_, err = userService.Create(ctx, getUserCreatePayload())
 	assert.ErrorIs(t, err, ErrAlreadyExists)
+}
+
+func TestUser_Integration_LoginSuccess(t *testing.T) {
+	ctx := context.Background()
+	cfg := getConfig()
+	url := "/v1/user/login"
+	var resp UserAuthenticationResponse
+
+	pgContainer, err := dbtest.CreatePostgresContainer(ctx)
+	if err != nil {
+		t.Fatalf("error creating postgres container: %v", err)
+	}
+
+	db, err := sql.Open("pgx", pgContainer.ConnectionString)
+	if err != nil {
+		t.Fatalf("unable to connect to database: %v\n", err)
+	}
+
+	t.Cleanup(func() {
+		if err := pgContainer.Terminate(ctx); err != nil {
+			t.Fatalf("failed to terminate pgContainer: %v", err)
+		}
+		if err := db.Close(); err != nil {
+			t.Fatalf("failed to close db: %v", err)
+		}
+	})
+
+	userRepo := NewRepository(db)
+	userService := NewService(cfg, userRepo)
+	userHandler := NewHandler(cfg, userService)
+
+	// inject user data
+	user := getUserCreatePayload()
+	_, err = userService.Create(ctx, user)
+	assert.NoError(t, err)
+
+	payload := string(fmt.Sprintf(`{"username": "%s", "password": "%s"}`, user.Username, user.Password))
+	req := httptest.NewRequest(http.MethodPost, url, bytes.NewBufferString(payload))
+	w := httptest.NewRecorder()
+
+	userHandler.Login(w, req)
+
+	res := w.Result()
+	defer res.Body.Close()
+
+	data, err := io.ReadAll(res.Body)
+	if err != nil {
+		t.Errorf("error reading response body: %v", err)
+	}
+
+	err = json.Unmarshal(data, &resp)
+	if err != nil {
+		t.Errorf("error unmarshaling resp json: %v", err)
+	}
+	assert.Equal(t, servicebase.CodeSuccess, resp.Code)
+	assert.NotEmpty(t, resp.Data.Token)
+
+	// verify token is valid
+	_, err = jwt.VerifyAndGetSubject(cfg.App.Secret, resp.Data.Token)
+	assert.NoError(t, err)
+}
+
+func TestUser_Integration_LoginErrUserNotExists(t *testing.T) {
+	ctx := context.Background()
+	cfg := getConfig()
+	url := "/v1/user/login"
+	var resp UserAuthenticationResponse
+
+	pgContainer, err := dbtest.CreatePostgresContainer(ctx)
+	if err != nil {
+		t.Fatalf("error creating postgres container: %v", err)
+	}
+
+	db, err := sql.Open("pgx", pgContainer.ConnectionString)
+	if err != nil {
+		t.Fatalf("unable to connect to database: %v\n", err)
+	}
+
+	t.Cleanup(func() {
+		if err := pgContainer.Terminate(ctx); err != nil {
+			t.Fatalf("failed to terminate pgContainer: %v", err)
+		}
+		if err := db.Close(); err != nil {
+			t.Fatalf("failed to close db: %v", err)
+		}
+	})
+
+	userRepo := NewRepository(db)
+	userService := NewService(cfg, userRepo)
+	userHandler := NewHandler(cfg, userService)
+
+	// inject user data
+	user := getUserCreatePayload()
+	_, err = userService.Create(ctx, user)
+	assert.NoError(t, err)
+
+	payload := string(fmt.Sprintf(`{"username": "%s", "password": "%s"}`, "somethingelse", user.Password))
+	req := httptest.NewRequest(http.MethodPost, url, bytes.NewBufferString(payload))
+	w := httptest.NewRecorder()
+
+	userHandler.Login(w, req)
+
+	res := w.Result()
+	defer res.Body.Close()
+
+	data, err := io.ReadAll(res.Body)
+	if err != nil {
+		t.Errorf("error reading response body: %v", err)
+	}
+
+	err = json.Unmarshal(data, &resp)
+	if err != nil {
+		t.Errorf("error unmarshaling resp json: %v", err)
+	}
+	assert.Equal(t, servicebase.Code4XX, resp.Code)
 }
