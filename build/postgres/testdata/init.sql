@@ -33,7 +33,7 @@ create index if not exists users_sex on dealls_bumble.users using hash (sex);
 create table if not exists dealls_bumble.user_images
 (
     id    SERIAL primary key,
-    user_id BIGINT NOT NULL,
+    user_id BIGINT,
     title varchar(50),
     url VARCHAR NOT NULL,
     created_at TIMESTAMP DEFAULT current_timestamp,
