@@ -18,6 +18,7 @@ create table if not exists dealls_bumble.users
     birthdate TIMESTAMP NOT NULL,
     verified bool NOT NULL DEFAULT false,
     max_swipes INT DEFAULT 10,
+    premium_package_id BIGINT,
     created_at TIMESTAMP DEFAULT current_timestamp,
     is_deleted bool NOT NULL DEFAULT false
 );
@@ -43,17 +44,18 @@ alter table dealls_bumble.user_images
 	add constraint fk_user_id foreign key (user_id) references dealls_bumble.users(id) on delete cascade;
 
 -- user_matches
-create table if not exists dealls_bumble.users_matches (
+create table if not exists dealls_bumble.user_matches (
     id SERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL,
     match_id BIGINT NOT NULL,
+    matched bool NOT NULL default false,
     created_at TIMESTAMP DEFAULT current_timestamp,
     is_deleted bool NOT NULL DEFAULT false
 );
 
-alter table dealls_bumble.users_matches
+alter table dealls_bumble.user_matches
 	add constraint fk_user_id foreign key (user_id) references dealls_bumble.users(id) on delete cascade;
-alter table dealls_bumble.users_matches
+alter table dealls_bumble.user_matches
 	add constraint fk_match_id foreign key (match_id) references dealls_bumble.users(id) on delete cascade;
 
 -- premium packages
@@ -62,10 +64,15 @@ create table if not exists dealls_bumble.premium_packages
 (
     id SERIAL PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
-    perks_code VARCHAR NOT NULL,
+    perks_codes VARCHAR[] NOT NULL,
     created_at TIMESTAMP DEFAULT current_timestamp,
     is_deleted bool NOT NULL DEFAULT false
 );
+
+create index if not exists premium_packages_perks_codes on dealls_bumble.premium_packages using gin (perks_codes);
+
+alter table dealls_bumble.users
+	add constraint fk_premium_package_id foreign key (premium_package_id) references dealls_bumble.premium_packages(id) on delete cascade;
 
 -- perks
 create table if not exists dealls_bumble.perks
@@ -75,3 +82,5 @@ create table if not exists dealls_bumble.perks
     created_at TIMESTAMP DEFAULT current_timestamp,
     is_deleted bool NOT NULL DEFAULT false
 );
+
+create index if not exists perks_code_idx on dealls_bumble.perks using hash (perks_code);

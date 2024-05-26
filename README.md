@@ -4,9 +4,11 @@ A dating app service for dealls.
 ## Milestones
 
 - [x] Register/Login endpoint
+- [ ] AWS S3 bucket integration for image uploads
+- [ ] Email verification endpoint
+- [ ] Login by email
 - [ ] Users matching feature
 - [ ] Premium package perk
-- [ ] AWS S3 bucket integration for image uploads
 - [ ] Push docker image to AWS ECR for deployment to AWS ECS
 - [ ] Languages supported
 
