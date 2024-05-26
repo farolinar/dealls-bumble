@@ -47,8 +47,8 @@ func Initialize(cfg config.AppConfig) *mux.Router {
 
 	// initialize user domain
 	userRepository := userv1.NewRepository(db)
-	userService := userv1.NewService(userRepository)
-	userHandler := userv1.NewHandler(userService)
+	userService := userv1.NewService(cfg, userRepository)
+	userHandler := userv1.NewHandler(cfg, userService)
 
 	ur := v1.PathPrefix("/user").Subrouter()
 	ur.HandleFunc("/register", userHandler.CreateUser).Methods(http.MethodPost)

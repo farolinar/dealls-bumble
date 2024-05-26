@@ -3,14 +3,11 @@ package password
 import (
 	"errors"
 
-	"github.com/farolinar/dealls-bumble/config"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func Hash(plaintextPassword string) (string, error) {
-	cfg := config.GetConfig()
-
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(plaintextPassword), cfg.App.BCryptSalt)
+func Hash(salt int, plaintextPassword string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(plaintextPassword), salt)
 	if err != nil {
 		return "", err
 	}

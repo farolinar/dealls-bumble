@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/farolinar/dealls-bumble/config"
 	"github.com/farolinar/dealls-bumble/internal/common/password"
 	servicebase "github.com/farolinar/dealls-bumble/services/base"
 	_ "github.com/jackc/pgx/v5"
@@ -41,7 +42,8 @@ func TestUser_Unit_CreateUser(t *testing.T) {
 				svc: func() Service {
 					db, _, _ := sqlmock.New()
 					userRepo := NewRepository(db)
-					mockUserService := NewService(userRepo)
+					cfg := getConfig()
+					mockUserService := NewService(cfg, userRepo)
 
 					return mockUserService
 				},
@@ -72,7 +74,8 @@ func TestUser_Unit_CreateUser(t *testing.T) {
 				svc: func() Service {
 					db, _, _ := sqlmock.New()
 					userRepo := NewRepository(db)
-					mockUserService := NewService(userRepo)
+					cfg := getConfig()
+					mockUserService := NewService(cfg, userRepo)
 
 					return mockUserService
 				},
@@ -103,7 +106,8 @@ func TestUser_Unit_CreateUser(t *testing.T) {
 				svc: func() Service {
 					db, _, _ := sqlmock.New()
 					userRepo := NewRepository(db)
-					mockUserService := NewService(userRepo)
+					cfg := getConfig()
+					mockUserService := NewService(cfg, userRepo)
 
 					return mockUserService
 				},
@@ -134,7 +138,8 @@ func TestUser_Unit_CreateUser(t *testing.T) {
 				svc: func() Service {
 					db, _, _ := sqlmock.New()
 					userRepo := NewRepository(db)
-					mockUserService := NewService(userRepo)
+					cfg := getConfig()
+					mockUserService := NewService(cfg, userRepo)
 
 					return mockUserService
 				},
@@ -165,7 +170,8 @@ func TestUser_Unit_CreateUser(t *testing.T) {
 				svc: func() Service {
 					db, _, _ := sqlmock.New()
 					userRepo := NewRepository(db)
-					mockUserService := NewService(userRepo)
+					cfg := getConfig()
+					mockUserService := NewService(cfg, userRepo)
 
 					return mockUserService
 				},
@@ -196,7 +202,8 @@ func TestUser_Unit_CreateUser(t *testing.T) {
 				svc: func() Service {
 					db, _, _ := sqlmock.New()
 					userRepo := NewRepository(db)
-					mockUserService := NewService(userRepo)
+					cfg := getConfig()
+					mockUserService := NewService(cfg, userRepo)
 
 					return mockUserService
 				},
@@ -227,7 +234,8 @@ func TestUser_Unit_CreateUser(t *testing.T) {
 				svc: func() Service {
 					db, _, _ := sqlmock.New()
 					userRepo := NewRepository(db)
-					mockUserService := NewService(userRepo)
+					cfg := getConfig()
+					mockUserService := NewService(cfg, userRepo)
 
 					return mockUserService
 				},
@@ -302,7 +310,8 @@ func TestUser_Unit_Login(t *testing.T) {
 						t.Fatalf("error creating mock: %v", err)
 					}
 					userRepo := NewRepository(db)
-					mockUserService := NewService(userRepo)
+					cfg := getConfig()
+					mockUserService := NewService(cfg, userRepo)
 					mocking.ExpectQuery(`SELECT uid, name, email, username, hashed_password, sex, birthdate, created_at
 					FROM dealls_bumble.users`).WithArgs(user.Username).
 						WillReturnRows(sqlmock.NewRows([]string{"uid", "name", "email", "username", "hashed_password", "sex", "birthdate", "created_at"}).
@@ -331,7 +340,8 @@ func TestUser_Unit_Login(t *testing.T) {
 				svc: func() Service {
 					db, _, _ := sqlmock.New()
 					userRepo := NewRepository(db)
-					mockUserService := NewService(userRepo)
+					cfg := getConfig()
+					mockUserService := NewService(cfg, userRepo)
 
 					return mockUserService
 				},
@@ -356,7 +366,8 @@ func TestUser_Unit_Login(t *testing.T) {
 				svc: func() Service {
 					db, _, _ := sqlmock.New()
 					userRepo := NewRepository(db)
-					mockUserService := NewService(userRepo)
+					cfg := getConfig()
+					mockUserService := NewService(cfg, userRepo)
 
 					return mockUserService
 				},
@@ -381,7 +392,8 @@ func TestUser_Unit_Login(t *testing.T) {
 				svc: func() Service {
 					db, _, _ := sqlmock.New()
 					userRepo := NewRepository(db)
-					mockUserService := NewService(userRepo)
+					cfg := getConfig()
+					mockUserService := NewService(cfg, userRepo)
 
 					return mockUserService
 				},
@@ -424,6 +436,16 @@ func TestUser_Unit_Login(t *testing.T) {
 	}
 }
 
+func getConfig() config.AppConfig {
+	return config.AppConfig{
+		App: config.App{
+			JWTSecret:       "jwt_secret",
+			BCryptSalt:      8,
+			JWTHourDuration: 2,
+		},
+	}
+}
+
 func getUserCreatePayload() UserCreatePayload {
 	return UserCreatePayload{
 		Name:       "Tav",
@@ -438,8 +460,9 @@ func getUserCreatePayload() UserCreatePayload {
 
 func getTestUserEntity() (user User, err error) {
 	payload := getUserCreatePayload()
+	cfg := getConfig()
 
-	hashedPassword, err := password.Hash(payload.Password)
+	hashedPassword, err := password.Hash(cfg.App.BCryptSalt, payload.Password)
 	if err != nil {
 		return
 	}

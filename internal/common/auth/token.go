@@ -7,7 +7,6 @@ import (
 	"github.com/farolinar/dealls-bumble/internal/common/jwt"
 )
 
-func CreateAccessToken(subject string) (string, error) {
-	cfg := config.GetConfig()
-	return jwt.Sign(time.Duration(cfg.App.JWTHourDuration)*time.Hour, subject)
+func CreateAccessToken(cfg config.AppConfig, subject string) (string, error) {
+	return jwt.Sign(time.Duration(cfg.App.JWTHourDuration)*time.Hour, cfg.App.Secret, subject)
 }

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/farolinar/dealls-bumble/config"
 	"github.com/farolinar/dealls-bumble/internal/common/auth"
 	"github.com/farolinar/dealls-bumble/internal/common/password"
 	"github.com/farolinar/dealls-bumble/internal/common/uid"
@@ -20,15 +21,16 @@ type Service interface {
 }
 
 type userService struct {
+	cfg        config.AppConfig
 	repository Repository
 }
 
-func NewService(repository Repository) Service {
-	return &userService{repository: repository}
+func NewService(cfg config.AppConfig, repository Repository) Service {
+	return &userService{cfg: cfg, repository: repository}
 }
 
 func (s *userService) Create(ctx context.Context, payload UserCreatePayload) (resp UserAuthentication, err error) {
-	hashedPassword, err := password.Hash(payload.Password)
+	hashedPassword, err := password.Hash(s.cfg.App.BCryptSalt, payload.Password)
 	if err != nil {
 		log.Debug().Msgf("error hashing password: %s", err.Error())
 		return
@@ -65,7 +67,7 @@ func (s *userService) Create(ctx context.Context, payload UserCreatePayload) (re
 	}
 
 	// create access token with signed jwt
-	accessToken, err := auth.CreateAccessToken(fmt.Sprint(user.UID))
+	accessToken, err := auth.CreateAccessToken(s.cfg, fmt.Sprint(user.UID))
 	if err != nil {
 		log.Debug().Msgf("error creating access token: %s", err.Error())
 		return
@@ -97,7 +99,7 @@ func (s *userService) Login(ctx context.Context, payload UserLoginPayload) (resp
 	}
 
 	// create access token with signed jwt
-	accessToken, err := auth.CreateAccessToken(fmt.Sprint(user.UID))
+	accessToken, err := auth.CreateAccessToken(s.cfg, fmt.Sprint(user.UID))
 	if err != nil {
 		log.Debug().Msgf("error creating access token: %v", err)
 		return

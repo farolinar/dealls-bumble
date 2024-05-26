@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/farolinar/dealls-bumble/config"
 	"github.com/farolinar/dealls-bumble/internal/common/request"
 	"github.com/farolinar/dealls-bumble/internal/common/response"
 	servicebase "github.com/farolinar/dealls-bumble/services/base"
@@ -16,11 +17,12 @@ var (
 )
 
 type Handler struct {
+	cfg     config.AppConfig
 	service Service
 }
 
-func NewHandler(service Service) *Handler {
-	return &Handler{service: service}
+func NewHandler(cfg config.AppConfig, service Service) *Handler {
+	return &Handler{cfg: cfg, service: service}
 }
 
 func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {

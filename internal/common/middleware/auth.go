@@ -4,12 +4,13 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/farolinar/dealls-bumble/config"
 	"github.com/farolinar/dealls-bumble/internal/common/jwt"
 )
 
 type ContextAuthKey struct{}
 
-func Authorize(next func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
+func Authorize(cfg config.AppConfig, next func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -30,7 +31,7 @@ func Authorize(next func(w http.ResponseWriter, r *http.Request)) func(w http.Re
 			return
 		}
 
-		subject, err := jwt.VerifyAndGetSubject(tokenString)
+		subject, err := jwt.VerifyAndGetSubject(cfg.App.Secret, tokenString)
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
@@ -44,7 +45,7 @@ func Authorize(next func(w http.ResponseWriter, r *http.Request)) func(w http.Re
 }
 
 // Authenticate request only if authorization header is set
-func Authenticate(next func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
+func Authenticate(cfg config.AppConfig, next func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -65,7 +66,7 @@ func Authenticate(next func(w http.ResponseWriter, r *http.Request)) func(w http
 			return
 		}
 
-		subject, err := jwt.VerifyAndGetSubject(tokenString)
+		subject, err := jwt.VerifyAndGetSubject(cfg.App.Secret, tokenString)
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			return

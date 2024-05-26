@@ -9,6 +9,14 @@ import (
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 )
 
+var (
+	MinName = 3
+	MaxName = 50
+
+	MinUsername = 3
+	MaxUsername = 30
+)
+
 type UserCreatePayload struct {
 	Name       string `json:"name"`
 	Email      string `json:"email"`
@@ -37,9 +45,9 @@ func (p UserCreatePayload) Validate() error {
 	}
 
 	return validation.ValidateStruct(&p,
-		validation.Field(&p.Name, validation.Required, validation.Length(3, 50)),
+		validation.Field(&p.Name, validation.Required, validation.Length(MinName, MaxName)),
 		validation.Field(&p.Email, validation.Required, is.Email),
-		validation.Field(&p.Username, validation.Required, validation.Length(5, 30)),
+		validation.Field(&p.Username, validation.Required, validation.Length(MinUsername, MaxUsername)),
 		validation.Field(&p.Password, validation.Required, servicebase.PasswordValidationRule),
 		validation.Field(&p.Sex, validation.Required, validation.In(SexList...)),
 		validation.Field(&p.Birthdate, validation.Required, validation.Date(p.TimeLayout)),
