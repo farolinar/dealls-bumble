@@ -12,6 +12,40 @@ services:
       - "./build/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql"
     ports:
       - "5432:5432"
+      
+  dealls-dating-service:
+    container_name: dealls-dating-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # volumes:
+    #   - /home/ubuntu/ap-southeast-1-bundle.pem:/home/ubuntu/ap-southeast-1-bundle.pem
+    env_file:
+      - .env
+    # environment:
+    #   APP_HOST: ${APP_HOST}
+    #   APP_PORT: ${APP_PORT}
+    #   APP_SECRET: ${APP_SECRET}
+    #   APP_NAME: ${APP_NAME}
+    #   APP_LOG_PRETTY: ${APP_LOG_PRETTY}
+    #   APP_LOG_LEVEL: ${APP_LOG_LEVEL}
+    #   APP_BCRYPT_SALT: ${APP_BCRYPT_SALT}
+    #   APP_JWT_SECRET: ${APP_JWT_SECRET}
+    #   APP_JWT_HOUR_DURATION: ${APP_JWT_HOUR_DURATION}
+
+    #   POSTGRES_NAME: ${POSTGRES_NAME}
+    #   POSTGRES_PORT: ${POSTGRES_PORT}
+    #   POSTGRES_HOST: ${POSTGRES_HOST}
+    #   POSTGRES_USERNAME: ${POSTGRES_USERNAME}
+    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    #   POSTGRES_PARAMS: ${POSTGRES_PARAMS}
+    #   POSTGRES_CONN_POOL_SIZE: ${POSTGRES_CONN_POOL_SIZE}
+    #   POSTGRES_CONN_LIFETIME_MAX: ${POSTGRES_CONN_LIFETIME_MAX}
+    #   POSTGRES_CONN_IDLE_MAX: ${POSTGRES_CONN_IDLE_MAX}
 
 volumes:
   dealls-postgres-db:
