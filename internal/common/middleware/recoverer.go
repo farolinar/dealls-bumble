@@ -18,10 +18,13 @@ func PanicRecoverer(next http.Handler) http.Handler {
 				if r != http.ErrAbortHandler {
 					log.Error().Msg(fmt.Sprintf("Recovered from panic: %s", string(debug.Stack())))
 				}
-				response.JSON(w, http.StatusInternalServerError, servicebase.ResponseBody{
+				err := response.JSON(w, http.StatusInternalServerError, servicebase.ResponseBody{
 					Message: "Internal server error",
 					Code:    servicebase.Code5XX,
 				})
+				if err != nil {
+					log.Error().Msg(fmt.Sprintf("Error writing response: %v", err))
+				}
 			}
 		}()
 		next.ServeHTTP(w, r)

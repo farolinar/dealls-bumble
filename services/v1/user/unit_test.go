@@ -26,8 +26,8 @@ func TestUser_Unit_CreateUser(t *testing.T) {
 		svc func() Service
 	}
 	type args struct {
-		rw http.ResponseWriter
-		r  func() *http.Request
+		// rw http.ResponseWriter
+		r func() *http.Request
 	}
 	tests := []struct {
 		name       string
@@ -291,8 +291,8 @@ func TestUser_Unit_Login(t *testing.T) {
 		svc func() Service
 	}
 	type args struct {
-		rw http.ResponseWriter
-		r  func() *http.Request
+		// rw http.ResponseWriter
+		r func() *http.Request
 	}
 	tests := []struct {
 		name       string

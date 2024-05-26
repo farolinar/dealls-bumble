@@ -1,13 +1,13 @@
 package postgres
 
 import (
+	"context"
 	"fmt"
-	"os"
-	"strconv"
 	"time"
 
 	"database/sql"
 
+	"github.com/farolinar/dealls-bumble/config"
 	_ "github.com/jackc/pgx/v5"
 )
 
@@ -27,6 +27,7 @@ type DBPostgreOption struct {
 	MaxPoolSize     int
 	MaxIdleConns    int
 	ConnMaxLifetime time.Duration
+	Timeout         time.Duration
 }
 
 // NewPostgreDatabase return gorp dbmap object with postgre options param
@@ -52,19 +53,30 @@ func (m DBPostgreOption) NewPostgreDatabaseWithDSN(dsn string) (db *sql.DB, err 
 
 // NewPostgreDatabase return gorp dbmap object with postgre options param
 func (m DBPostgreOption) NewPostgreDatabase() (db *sql.DB, err error) {
+	ctx, cancel := context.WithTimeout(context.Background(), m.Timeout)
+	defer cancel()
+
 	db, err = sql.Open("pgx", fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=disable", m.Host, m.Port, m.Username, m.DBName, m.Password))
 	if err != nil {
 		return
+	}
+
+	if err := db.PingContext(ctx); err != nil {
+		return nil, fmt.Errorf("failed to ping database: %v", err)
 	}
 
 	db.SetConnMaxLifetime(m.ConnMaxLifetime)
 	db.SetMaxIdleConns(m.MaxIdleConns)
 	db.SetMaxOpenConns(m.MaxPoolSize)
 
-	err = db.Ping()
-	if err != nil {
-		return
+	if err := db.PingContext(ctx); err != nil {
+		return nil, fmt.Errorf("failed to ping database: %v", err)
 	}
+
+	// err = db.Ping()
+	// if err != nil {
+	// 	return
+	// }
 
 	dbConn = db
 
@@ -76,16 +88,17 @@ type DBPostgreOptionBuilder struct {
 	dBPostgreOption *DBPostgreOption
 }
 
-func NewDBPostgreOptionBuilder() *DBPostgreOptionBuilder {
-	postgresqlPort, _ := strconv.Atoi(os.Getenv("POSTGRESQL_PORT"))
+func NewDBPostgreOptionBuilder(cfg config.AppConfig) *DBPostgreOptionBuilder {
+	postgresqlPort := cfg.Postgres.Port
 	dBPostgreOption := &DBPostgreOption{
-		Host:            os.Getenv("POSTGRES_HOST"),
+		Host:            cfg.Postgres.Host,
 		Port:            postgresqlPort,
-		Username:        os.Getenv("POSTGRES_USERNAME"),
-		Password:        os.Getenv("POSTGRES_PASSWORD"),
-		MaxPoolSize:     10,
-		MaxIdleConns:    2,
-		ConnMaxLifetime: 30 * time.Second,
+		Username:        cfg.Postgres.Username,
+		Password:        cfg.Postgres.Password,
+		MaxPoolSize:     cfg.Postgres.ConnPoolSize,
+		MaxIdleConns:    cfg.Postgres.ConnIdleMax,
+		ConnMaxLifetime: cfg.Postgres.ConnLifetimeMax,
+		Timeout:         cfg.Postgres.Timeout,
 	}
 	b := &DBPostgreOptionBuilder{dBPostgreOption: dBPostgreOption}
 	return b

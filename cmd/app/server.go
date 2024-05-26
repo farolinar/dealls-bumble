@@ -22,7 +22,7 @@ import (
 
 func Initialize(cfg config.AppConfig) *mux.Router {
 
-	postgresDB, _ := postgres.NewDBPostgreOptionBuilder().WithHost(cfg.Postgres.Host).
+	postgresDB, _ := postgres.NewDBPostgreOptionBuilder(cfg).WithHost(cfg.Postgres.Host).
 		WithPort(cfg.Postgres.Port).WithUsername(cfg.Postgres.Username).
 		WithDBName(cfg.Postgres.DbName).Build()
 
@@ -40,7 +40,10 @@ func Initialize(cfg config.AppConfig) *mux.Router {
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "text")
 		w.WriteHeader(http.StatusOK)
-		io.WriteString(w, "Service ready")
+		_, err := io.WriteString(w, "Service ready")
+		if err != nil {
+			log.Fatal().Msgf("Error checking service: %s", err.Error())
+		}
 	})
 
 	healthCheck := r.PathPrefix("/health-check").Subrouter()

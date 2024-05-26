@@ -121,13 +121,15 @@ A dating app service for dealls.
 In order to run the service, you need
 - Docker & Docker Compose v2++ (recommended, but there's an alternative in Getting Started)
 - Go (minimum v1.22 recommended)
+- golangci-lint (not required, for linting purposes)
 
 ## Getting Started
 
 Make a new file called `.env` inside the root of the project. Copy the contents of `.env.example` to the `.env` file
 
+### Starting the database
 ### Use Docker
-1. Run the docker compose to start the database and the service
+1. Run the docker compose to start the database
 ```bash
 docker-compose up -d
 ```
@@ -139,7 +141,21 @@ docker-compose up -d
 
 1. Start the database
     + Run the sql file script `init.sql` inside `build/postgres` folder to your postgres database
-2. Run the service
+
+> [!NOTE]
+> Try curl or run postman request for health check
+> ```
+> curl -I --request GET 'localhost:8080/health_check/db'
+> ```
+> it should response with these result
+> ```
+> HTTP/1.1 200 OK
+> Date: Sun, 26 May 2024 11:23:14 GMT
+> Content-Length: 0
+> ```
+
+### Starting the service
+1. Run the service
 ```bash
 go run cmd/main.go
 ```

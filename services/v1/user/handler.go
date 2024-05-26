@@ -8,6 +8,7 @@ import (
 	"github.com/farolinar/dealls-bumble/internal/common/request"
 	"github.com/farolinar/dealls-bumble/internal/common/response"
 	servicebase "github.com/farolinar/dealls-bumble/services/base"
+	"github.com/rs/zerolog/log"
 )
 
 var (
@@ -33,43 +34,58 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	err := request.DecodeJSON(w, r, &payload)
 	if err != nil {
-		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
+		err = response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: MessageFailedDecodeJSON,
 			Code:    servicebase.Code4XX,
 		})
+		if err != nil {
+			log.Error().Msgf("error encoding response body: %v", err)
+		}
 		return
 	}
 
 	payload = payload.NewLayoutDateOnly()
 	err = payload.Validate()
 	if err != nil {
-		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
+		err = response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: err.Error(),
 			Code:    servicebase.Code4XX,
 		})
+		if err != nil {
+			log.Error().Msgf("error encoding response body: %v", err)
+		}
 		return
 	}
 
 	userResp, err := h.service.Create(r.Context(), payload)
 	if errors.Is(err, ErrAlreadyExists) {
-		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
+		err = response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: err.Error(),
 			Code:    servicebase.Code4XX,
 		})
+		if err != nil {
+			log.Error().Msgf("error encoding response body: %v", err)
+		}
 		return
 	}
 	if err != nil {
-		response.JSON(w, http.StatusInternalServerError, servicebase.ResponseBody{
+		err = response.JSON(w, http.StatusInternalServerError, servicebase.ResponseBody{
 			Message: MessageInternalError,
 			Code:    servicebase.Code5XX,
 		})
+		if err != nil {
+			log.Error().Msgf("error encoding response body: %v", err)
+		}
 		return
 	}
 
 	resp.Message = MessageSuccess
 	resp.Code = servicebase.CodeSuccess
 	resp.Data = &userResp
-	response.JSON(w, http.StatusCreated, resp)
+	err = response.JSON(w, http.StatusCreated, resp)
+	if err != nil {
+		log.Error().Msgf("error encoding response body: %v", err)
+	}
 }
 
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
@@ -80,49 +96,67 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 
 	err := request.DecodeJSON(w, r, &payload)
 	if err != nil {
-		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
+		err = response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: MessageFailedDecodeJSON,
 			Code:    servicebase.Code4XX,
 		})
+		if err != nil {
+			log.Error().Msgf("error encoding response body: %v", err)
+		}
 		return
 	}
 
 	err = payload.Validate()
 	if err != nil {
-		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
+		err = response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: err.Error(),
 			Code:    servicebase.Code4XX,
 		})
+		if err != nil {
+			log.Error().Msgf("error encoding response body: %v", err)
+		}
 		return
 	}
 
 	userResp, err := h.service.Login(r.Context(), payload)
 	if errors.Is(err, ErrNotFound) {
-		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
+		err = response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: err.Error(),
 			Code:    servicebase.Code4XX,
 		})
+		if err != nil {
+			log.Error().Msgf("error encoding response body: %v", err)
+		}
 		return
 	}
 	if errors.Is(err, ErrWrongPassword) {
-		response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
+		err = response.JSON(w, http.StatusBadRequest, servicebase.ResponseBody{
 			Message: err.Error(),
 			Code:    servicebase.Code4XX,
 		})
+		if err != nil {
+			log.Error().Msgf("error encoding response body: %v", err)
+		}
 		return
 	}
 	if err != nil {
-		response.JSON(w, http.StatusInternalServerError, servicebase.ResponseBody{
+		err = response.JSON(w, http.StatusInternalServerError, servicebase.ResponseBody{
 			Message: MessageInternalError,
 			Code:    servicebase.Code5XX,
 		})
+		if err != nil {
+			log.Error().Msgf("error encoding response body: %v", err)
+		}
 		return
 	}
 
 	resp.Message = MessageSuccess
 	resp.Code = servicebase.CodeSuccess
 	resp.Data = &userResp
-	response.JSON(w, http.StatusOK, resp)
+	err = response.JSON(w, http.StatusOK, resp)
+	if err != nil {
+		log.Error().Msgf("error encoding response body: %v", err)
+	}
 }
 
 func translateMessage(r *http.Request) {

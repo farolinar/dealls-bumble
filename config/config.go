@@ -105,6 +105,7 @@ type Postgres struct {
 	ConnPoolSize    int           `mapstructure:"conn_pool_size" validate:"required"`
 	ConnIdleMax     int           `mapstructure:"conn_idle_max" validate:"required"`
 	ConnLifetimeMax time.Duration `mapstructure:"conn_lifetime_max" validate:"required"`
+	Timeout         time.Duration `mapstructure:"timeout" validate:"required"`
 }
 
 type DbConnection struct{}

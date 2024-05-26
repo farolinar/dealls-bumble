@@ -4,6 +4,15 @@ FROM golang:1.22 as builder
 # Set the Current Working Directory inside the container
 WORKDIR /app
 
+# Define health check script
+COPY health_check.sh /usr/local/bin/health_check.sh
+
+# Set execute permissions for the health check script
+RUN chmod +x /usr/local/bin/health_check.sh
+
+# Set the health check command
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 CMD ["/usr/local/bin/health_check.sh"]
+
 # Copy everything from the current directory to the PWD(Present Working Directory) inside the container
 COPY . .
 
